@@ -4,7 +4,6 @@ import NetworkStatus from "@/components/NetworkStatus";
 import "./globals.css";
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
-import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +32,7 @@ export default async function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <NetworkStatus><Navbar/>{children}</NetworkStatus>
+          <NetworkStatus>{children}</NetworkStatus>
         </body>
       </html>
     </SessionProvider>

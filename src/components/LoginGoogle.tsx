@@ -7,7 +7,7 @@ export default function LoginGoogle() {
   return (
     <button
       onClick={() => login("google")}
-      className="bg-white text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 border border-gray-300 hover:bg-gray-50 transition-colors"
+      className="w-full bg-white text-gray-700 px-4 py-2 rounded-lg flex items-center justify-center space-x-2 border border-gray-300 hover:bg-gray-50 transition-colors"
     >
       <FaGoogle className="text-xl" />
       <span>Continue with Google</span>

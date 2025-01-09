@@ -6,7 +6,7 @@ import React from 'react'
 export default function page() {
   return (
     <>
-    <h4>login</h4>
+    <h3>login</h3>
     <LoginGithub />
     <br />
     <LoginGoogle />

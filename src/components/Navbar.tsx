@@ -12,9 +12,6 @@ export default async function Navbar() {
       <Link href="/" className="text-white text-2xl font-bold">
         Task Manager
       </Link>
-      <Link href="/protected-route" className="text-white text-2xl font-bold">
-        protected route
-      </Link>
       <div className="flex items-center space-x-4">
         {!session?.user ? (
           <Link href="/auth/login">

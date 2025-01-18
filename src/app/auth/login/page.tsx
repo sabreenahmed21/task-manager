@@ -9,8 +9,8 @@ export default function page() {
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
         <div className="flex items-center justify-center space-x-2 mb-6">
-          <FaTasks className="text-4xl text-blue-600" />
-          <h3 className="text-3xl font-bold text-gray-800">
+          <FaTasks className="text-2xl text-blue-600" />
+          <h3 className="text-2xl font-bold text-gray-800">
             Welcome to Task Manager
           </h3>
         </div>

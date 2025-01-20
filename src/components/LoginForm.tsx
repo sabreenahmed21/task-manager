@@ -40,6 +40,12 @@ export default function LoginForm() {
                 field: "email",
                 message: "This email is not registered.",
               });
+            } else if (res.code === "CreatedUsingProvider") {
+              setError({
+                field: "email",
+                message:
+                "This account was created using Google or GitHub. Please log in using Google or GitHub or sign up with this email.",
+              })
             } else if (res.code === "PasswordIncorrect") {
               setError({
                 field: "password",
@@ -60,7 +66,7 @@ export default function LoginForm() {
         }
         return;
       }
-      router.push('/');
+      router.push("/");
     } catch (err) {
       console.error("Unexpected error:", err);
       setError({

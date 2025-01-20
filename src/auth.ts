@@ -1,4 +1,4 @@
-import NextAuth , {CredentialsSignin} from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -50,6 +50,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!user) {
           throw new CustomError("UserNotFound");
         }
+        if (!user.password) {
+          throw new CustomError("CreatedUsingProvider");
+        }
         const passwordMatch = await bcrypt.compare(
           credentials.password as string,
           user.password as string
@@ -65,4 +68,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async signIn({ user, account }) {
+      // البحث عن حساب بنفس البريد الإلكتروني
+      const existingUser = await prisma.user.findUnique({
+        where: { email: user.email },
+      });
+
+      if (existingUser) {
+        // إذا كان الحساب موجودًا، اربط طريقة تسجيل الدخول الجديدة بالحساب الحالي
+        await prisma.account.upsert({
+          where: {
+            provider_providerAccountId: {
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+            },
+          },
+          update: {}, // لا حاجة لتحديث شيء إذا كان مرتبطًا بالفعل
+          create: {
+            userId: existingUser.id,
+            provider: account.provider,
+            providerAccountId: account.providerAccountId,
+            type: account.type,
+            access_token: account.access_token,
+            refresh_token: account.refresh_token,
+            expires_at: account.expires_at,
+          },
+        });
+
+        return true; // السماح بتسجيل الدخول
+      }
+      return true;
+    },
+  },
 });

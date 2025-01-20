@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import NextAuth , {CredentialsSignin} from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";

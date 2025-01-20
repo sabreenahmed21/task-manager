@@ -72,10 +72,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user, account }) {
       // البحث عن حساب بنفس البريد الإلكتروني
       const existingUser = await prisma.user.findUnique({
-        where: { email: user.email },
+        where: { email: user.email ?? undefined },
       });
+      
 
       if (existingUser) {
+        if (!account) {
+          throw new CustomError("Account data is missing.");
+        }
         // إذا كان الحساب موجودًا، اربط طريقة تسجيل الدخول الجديدة بالحساب الحالي
         await prisma.account.upsert({
           where: {

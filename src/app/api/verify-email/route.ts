@@ -8,10 +8,6 @@ export async function POST(request: Request) {
     const body = await request.json(); 
     const { code, email } = body;
 
-    console.log("Code:", code);
-    console.log("Email:", email);
-
-
     if (!email || !code) {
       return NextResponse.json(
         { error: "Email and code are required" },

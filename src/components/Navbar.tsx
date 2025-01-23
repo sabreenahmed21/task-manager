@@ -9,7 +9,7 @@ export default async function Navbar() {
   const session = await auth();
   return (
     <nav className="bg-blue-600 p-4 flex justify-between items-center">
-      <Link href="/" className="text-white text-2xl font-bold">
+      <Link href="/dashboard" className="text-white text-2xl font-bold">
         Task Manager
       </Link>
       <div className="flex items-center space-x-4">

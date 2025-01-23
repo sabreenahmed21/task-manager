@@ -154,10 +154,10 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full px-4 py-2 rounded-md text-white ${
+            className={`w-full px-4 py-2 rounded-md text-white flex items-center justify-center ${
               loading
                 ? "bg-gray-600 cursor-not-allowed"
-                : "bg-black hover:bg-gray-800 transition-colors"
+                : "transition-colors"
             }`}
           >
             {loading ? (

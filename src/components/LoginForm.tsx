@@ -151,10 +151,10 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className={`w-full px-4 py-2 rounded-md text-white ${
+        className={`w-full px-4 py-2 rounded-md text-white flex items-center justify-center ${
           pending
             ? "bg-gray-600 cursor-not-allowed"
-            : "bg-black hover:bg-gray-800 transition-colors"
+            : "transition-colors"
         }`}
       >
         {pending ? (

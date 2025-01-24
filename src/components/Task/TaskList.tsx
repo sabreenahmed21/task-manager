@@ -265,7 +265,7 @@ export default function TaskList() {
                 <h2 className="max-w-full sm:max-w-[80%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[50%] font-bold sm:text-xl text-base text-gray-800 whitespace-pre-line break-words">
                   {task?.title || "No Title"}
                 </h2>
-                <p className="max-w-full sm:max-w-[80%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[50%] text-gray-600 mt-1 sm:text-xl text-sm whitespace-pre-line break-words">
+                <p className="max-w-[95%] text-gray-600 mt-1 sm:text-xl text-sm whitespace-pre-line break-words">
                   {task?.description || "No Description"}
                 </p>
               </div>

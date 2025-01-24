@@ -69,40 +69,58 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user, account }) {
-      // البحث عن حساب بنفس البريد الإلكتروني
-      const existingUser = await prisma.user.findUnique({
-        where: { email: user.email ?? undefined },
-      });
-      
-
-      if (existingUser) {
-        if (!account) {
-          throw new CustomError("Account data is missing.");
-        }
-        // إذا كان الحساب موجودًا، اربط طريقة تسجيل الدخول الجديدة بالحساب الحالي
-        await prisma.account.upsert({
-          where: {
-            provider_providerAccountId: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id as string; 
+      }
+      return token;
+    },
+  
+    async session({ session, token }) {
+      if (session.user && token.id) {
+        session.user.id = token.id as string; 
+      }
+      return session;
+    },
+      async signIn({ user, account }) {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email ?? undefined },
+        });
+    
+        if (existingUser) {
+          if (!account) {
+            throw new CustomError("Account data is missing.");
+          }
+          if (user.image) {
+            await prisma.user.update({
+              where: { email: user.email ?? undefined },
+              data: { image: user.image },
+            });
+          }
+          await prisma.account.upsert({
+            where: {
+              provider_providerAccountId: {
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+              },
+            },
+            update: {
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              expires_at: account.expires_at,
+            },
+            create: {
+              userId: existingUser.id,
               provider: account.provider,
               providerAccountId: account.providerAccountId,
+              type: account.type,
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              expires_at: account.expires_at,
             },
-          },
-          update: {}, // لا حاجة لتحديث شيء إذا كان مرتبطًا بالفعل
-          create: {
-            userId: existingUser.id,
-            provider: account.provider,
-            providerAccountId: account.providerAccountId,
-            type: account.type,
-            access_token: account.access_token,
-            refresh_token: account.refresh_token,
-            expires_at: account.expires_at,
-          },
-        });
-
-        return true; // السماح بتسجيل الدخول
-      }
-      return true;
+          });
+        }
+        return true;
+      },
     },
-  },
 });

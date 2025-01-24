@@ -1,15 +1,16 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 const VerifyCodeForm: React.FC = () => {
-  const [email, setEmail] = useState<string>(""); 
-  const [code, setCode] = useState<string>(""); 
+  const [email, setEmail] = useState<string>("");
+  const [code, setCode] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean | null>(null);
   const router = useRouter();
-  const inputRefs = useRef<Array<HTMLInputElement | null>>(Array(6).fill(null)); 
+  const inputRefs = useRef<Array<HTMLInputElement | null>>(Array(6).fill(null));
 
   // التركيز على المربع الأول عند تحميل الصفحة
   useEffect(() => {
@@ -31,7 +32,7 @@ const VerifyCodeForm: React.FC = () => {
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    // الانتقال إلى المربع السابق 
+    // الانتقال إلى المربع السابق
     if (
       e.key === "Backspace" &&
       !code[index] &&
@@ -48,7 +49,7 @@ const VerifyCodeForm: React.FC = () => {
 
     // If the copied text consists of 6 digits
     if (/^\d{6}$/.test(pastedData)) {
-      setCode(pastedData); 
+      setCode(pastedData);
 
       pastedData.split("").forEach((char, index) => {
         if (inputRefs.current[index]) {
@@ -66,7 +67,7 @@ const VerifyCodeForm: React.FC = () => {
     e.preventDefault();
     setMessage("");
     setIsSuccess(null);
-    setLoading(true)
+    setLoading(true);
 
     try {
       const response = await fetch("/api/verify-email", {
@@ -74,18 +75,21 @@ const VerifyCodeForm: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, code }), 
+        body: JSON.stringify({ email, code }),
       });
 
       const data = await response.json();
-      setLoading(false)
+      setLoading(false);
 
       if (response.ok) {
         setIsSuccess(true);
-        setMessage(data.message || "Email verified successfully!");
-        setTimeout(() => {
-          router.push("/auth/login");
-        }, 1000);
+        Swal.fire({
+          icon: "success",
+          title: "Change Password",
+          text: "Account created and email verified successfully!",
+          timer: 1500,
+        });
+        router.push("/auth/login");
       } else {
         setIsSuccess(false);
         setMessage(data.error || "Verification failed.");
@@ -148,7 +152,7 @@ const VerifyCodeForm: React.FC = () => {
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
               ref={(el) => {
-                inputRefs.current[index] = el; 
+                inputRefs.current[index] = el;
               }}
               style={{
                 width: "40px",
@@ -176,30 +180,30 @@ const VerifyCodeForm: React.FC = () => {
             fontWeight: "bold",
           }}
         >
-          {loading ? 
-          (
+          {loading ? (
             <svg
-            className="animate-spin h-5 w-5 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          )  : 
-          ("Verify")}
+              className="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          ) : (
+            "Verify"
+          )}
         </button>
       </form>
       {message && (

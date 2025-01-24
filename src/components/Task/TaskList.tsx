@@ -22,7 +22,6 @@ interface FilterButtonProps {
   onClick: () => void;
   bgColor: string;
   textColor: string;
-  outlineColor: string;
 }
 
 const FilterButton: React.FC<FilterButtonProps> = ({
@@ -32,14 +31,13 @@ const FilterButton: React.FC<FilterButtonProps> = ({
   onClick,
   bgColor,
   textColor,
-  outlineColor,
 }) => {
   const isActive = filterType === currentFilter;
   return (
     <button
       onClick={onClick}
       className={`sm:px-4 px-2 py-1 rounded-full text-sm font-medium ${
-        isActive ? `border-2 outline-2 outline-${outlineColor} outline` : ""
+        isActive ? `border-2 outline-2 outline` : ""
       } ${bgColor} ${textColor}`}
     >
       {label}
@@ -163,29 +161,25 @@ export default function TaskList() {
       label: "All",
       filterType: "all" as const,
       bgColor: "bg-blue-500",
-      textColor: "text-white",
-      outlineColor: "blue-600",
+      textColor: "text-white"
     },
     {
       label: "Important",
       filterType: "important" as const,
       bgColor: "bg-important-color",
-      textColor: "text-white",
-      outlineColor: "important-color",
+      textColor: "text-white"
     },
     {
       label: "Complete",
       filterType: "completed" as const,
       bgColor: "bg-green-100",
-      textColor: "text-green-800",
-      outlineColor: "green-200",
+      textColor: "text-green-800"
     },
     {
       label: "Incompleted",
       filterType: "incomplete" as const,
       bgColor: "bg-red-100",
-      textColor: "text-red-800",
-      outlineColor: "red-200",
+      textColor: "text-red-800"
     },
   ];
 
@@ -202,7 +196,7 @@ export default function TaskList() {
       <div className="flex items-center justify-between">
         <div className="hidden sm:flex gap-2">
           {filters.map(
-            ({ label, filterType, bgColor, textColor, outlineColor }) => (
+            ({ label, filterType, bgColor, textColor }) => (
               <FilterButton
                 key={filterType}
                 label={label}
@@ -211,14 +205,13 @@ export default function TaskList() {
                 onClick={() => setFilter(filterType)}
                 bgColor={bgColor}
                 textColor={textColor}
-                outlineColor={outlineColor}
               />
             )
           )}
         </div>
         <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white p-4 flex justify-around border-t border-gray-300">
           {filters.map(
-            ({ label, filterType, bgColor, textColor, outlineColor }) => (
+            ({ label, filterType, bgColor, textColor }) => (
               <FilterButton
                 key={filterType}
                 label={label}
@@ -227,7 +220,6 @@ export default function TaskList() {
                 onClick={() => setFilter(filterType)}
                 bgColor={bgColor}
                 textColor={textColor}
-                outlineColor={outlineColor}
               />
             )
           )}
@@ -246,16 +238,12 @@ export default function TaskList() {
           tasks.map((task) => (
             <div
               key={task?.id}
-              className="flex justify-between items-start rounded-lg p-4 bg-gray-100 gap-2"
+              className="rounded-lg p-4 bg-gray-100 gap-2"
             >
-              <div className="max-w-xl">
-                <h2 className="font-bold sm:text-xl text-base text-gray-800 whitespace-pre-line break-words">
+              <div className="flex justify-between items-start gap-2">
+                <h2 className="max-w-full sm:max-w-[80%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[50%] font-bold sm:text-xl text-base text-gray-800 whitespace-pre-line break-words">
                   {task?.title || "No Title"}
                 </h2>
-                <p className="text-gray-600 mt-1 sm:text-xl text-sm whitespace-pre-line break-words">
-                  {task?.description || "No Description"}
-                </p>
-              </div>
               <div className="flex items-center gap-0.5 sm:gap-2">
                 <div>
                   {task?.completed ? (
@@ -284,6 +272,10 @@ export default function TaskList() {
                   onTaskDeleted={() => fetchTasks(filter)}
                 />
               </div>
+              </div>
+              <p className="max-w-full sm:max-w-[80%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[50%] text-gray-600 mt-1 sm:text-xl text-sm whitespace-pre-line break-words">
+                  {task?.description || "No Description"}
+                </p>
             </div>
           ))
         ) : (

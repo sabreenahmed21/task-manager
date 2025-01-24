@@ -1,8 +1,16 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { title, description, important, completed } = await req.json();
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) {
+    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+  }
   try {
     await prisma.task.create({
       data: {
@@ -10,6 +18,7 @@ export async function POST(req: Request) {
         description,
         important,
         completed,
+        userId
       },
     });
     return NextResponse.json(
@@ -23,16 +32,21 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: NextRequest) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) {
+    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+  }
   try {
     const url = new URL(req.url);
     const filter = url.searchParams.get("filter") || "all";
-    let whereClause = {};
+    let whereClause: any = { userId };
     if (filter === "important") {
-      whereClause = { important: true };
+      whereClause.important = true;
     } else if (filter === "completed") {
-      whereClause = { completed: true };
+      whereClause.completed = true;
     } else if (filter === "incomplete") {
-      whereClause = { completed: false };
+      whereClause.completed = false;
     }
     const tasks = await prisma.task.findMany({
       where: whereClause,
@@ -46,6 +60,11 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: Request) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) {
+    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+  }
   try {
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
@@ -56,7 +75,7 @@ export async function DELETE(req: Request) {
       );
     }
     await prisma.task.delete({
-      where: { id: id },
+      where: { id: id ,  userId: userId },
     });
     return NextResponse.json(
       { message: "Task deleted successfully" },

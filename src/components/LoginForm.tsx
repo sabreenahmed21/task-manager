@@ -67,7 +67,7 @@ export default function LoginForm() {
         }
         return;
       }
-      router.push("/");
+      router.push("/dashboard");
     } catch (err) {
       console.error("Unexpected error:", err);
       setError({

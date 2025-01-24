@@ -24,8 +24,7 @@ model User {
   resetTokenExpires DateTime?
   accounts          Account[]
   sessions          Session[]
-  // Optional for WebAuthn support
-  Authenticator     Authenticator[]
+  tasks             Task[]
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 }
@@ -69,26 +68,14 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Authenticator {
-  credentialID         String  @id @map("_id")
-  userId               String  @db.ObjectId
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
-  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, credentialID])
-}
-
 model Task {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String?
   completed   Boolean  @default(false)
   important   Boolean  @default(false)
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

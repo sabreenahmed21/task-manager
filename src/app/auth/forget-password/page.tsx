@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 const PasswordResetFlow = () => {
   const [email, setEmail] = useState("");
@@ -71,7 +72,12 @@ const PasswordResetFlow = () => {
       if (!response.ok) {
         setMessage(data.error || "An error occurred.");
       } else {
-        setMessage("");
+        Swal.fire({
+          icon: "success",
+          title: "Forget Password",
+          text: "Password has been successfully recovered.",
+          timer: 1000,
+        });
         router.push("/auth/login");
       }
     } catch (error) {

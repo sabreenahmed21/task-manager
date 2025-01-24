@@ -39,9 +39,7 @@ export default function SignUpPage() {
         const errorData = await response.json();
         throw new Error(errorData.error || "Registration failed");
       }
-
-      const userInfo = await response.json();
-      console.log(userInfo);
+      await response.json();
       router.push("/auth/verify-email");
     } catch (error) {
       console.error("Error during registration:", error);

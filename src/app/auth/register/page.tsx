@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import LoginGoogle from "@/components/LoginGoogle";
 import LoginGithub from "@/components/LoginGithub";
-import { FaExclamationCircle, FaTasks } from "react-icons/fa";
+import { FaExclamationCircle } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 
 type FormData = {
   name: string;
@@ -53,26 +54,28 @@ export default function SignUpPage() {
 
   return (
     <div className="bg-gray-100 flex items-center justify-center min-h-screen">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <div className="flex items-center justify-center space-x-2 mb-6">
-          <FaTasks className="text-2xl text-blue-600" />
-          <h3 className="text-2xl font-bold text-gray-800">
+      <div className="bg-white sm:p-8 p-4 mx-3 rounded-lg shadow-lg w-full max-w-md">
+        <div className="flex items-center justify-center space-x-2 mb-4">
+          <Image src={'/assets/logo.png'} alt="logo" width={50} height={50}/>
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
             Welcome to Task Manager
           </h3>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <LoginGoogle />
           <LoginGithub />
         </div>
-        <div className="my-6 flex items-center">
+        <div className="my-4 flex items-center">
           <div className="flex-grow border-t border-gray-300"></div>
-          <span className="mx-4 text-gray-500">or Sign up with Email</span>
+          <span className="mx-2 sm:mx-4 text-sm sm:text-base text-gray-500">
+            or Sign up with Email
+          </span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           {serverError && (
-            <div className="flex items-center text-red-600 bg-red-200 p-2 text-sm mt-1 border-l-4 border-red-500 pl-2">
+            <div className="flex items-center text-red-600 bg-red-200 p-2 text-sm border-l-4 border-red-500">
               <FaExclamationCircle className="mr-2" />
               <p>{serverError}</p>
             </div>
@@ -91,7 +94,7 @@ export default function SignUpPage() {
               {...register("name", {
                 required: "Name is required",
               })}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
             />
             {errors.name && (
               <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
@@ -115,7 +118,7 @@ export default function SignUpPage() {
                   message: "Invalid email address",
                 },
               })}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">
@@ -141,7 +144,7 @@ export default function SignUpPage() {
                   message: "Password must be at least 6 characters",
                 },
               })}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
@@ -152,10 +155,8 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-gray-900 hover:bg-gray-800 px-4 py-2 rounded-md text-white flex items-center justify-center ${
-              loading
-                ? "bg-gray-600 cursor-not-allowed"
-                : "transition-colors"
+            className={`w-full bg-gray-900 hover:bg-gray-800 px-4 py-2 rounded-md text-white flex items-center justify-center text-sm sm:text-base ${
+              loading ? "bg-gray-600 cursor-not-allowed" : "transition-colors"
             }`}
           >
             {loading ? (
@@ -184,11 +185,13 @@ export default function SignUpPage() {
             )}
           </button>
         </form>
-        <div className="mt-6 text-center">
-          <span className="text-gray-600">Already have an account? </span>
+        <div className="mt-4 text-center">
+          <span className="text-sm sm:text-base text-gray-600">
+            Already have an account?
+          </span>
           <Link
             href="/auth/login"
-            className="text-blue-500 hover:text-blue-800 font-semibold"
+            className="text-blue-500 hover:text-blue-800 font-semibold text-sm sm:text-base"
           >
             Login
           </Link>

@@ -4,6 +4,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Swal from "sweetalert2";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
 
 type FormData = {
   currentPassword: string;
@@ -68,6 +70,13 @@ export default function ChangePasswordForm() {
   };
 
   return (
+    <>
+    <Link
+        href={"/dashboard"}
+        className="ml-auto px-6 py-2 text-black font-semibold flex items-center gap-2"
+      >
+        <FaArrowLeft />Back
+      </Link>
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-sm mx-auto mt-10 p-6 bg-white shadow-md rounded-lg"
@@ -153,5 +162,7 @@ export default function ChangePasswordForm() {
         <p className="mt-4 text-center text-sm text-red-700">{message}</p>
       )}
     </form>
+    </>
+    
   );
 }

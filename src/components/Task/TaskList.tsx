@@ -229,7 +229,7 @@ export default function TaskList() {
         </button>
       </div>
 
-      <div className="my-6 space-y-4">
+      <div className="mt-6 mb-24 sm:mb-6 space-y-4">
         {tasks?.length > 0 ? (
           tasks.map((task) => (
             <div key={task?.id} className="rounded-lg p-4 bg-gray-100 gap-2">

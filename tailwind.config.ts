@@ -11,6 +11,12 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        'custom-color': '#3B6790',
+        'task-color': '#DDA15E',
+        'important-color': '#BC6C25',
+      },
+      container: {
+        center: true, 
       },
     },
   },

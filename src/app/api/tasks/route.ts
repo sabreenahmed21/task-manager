@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { title, description, important, completed } = await req.json();
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
         title,
         description,
         important,
-        completed
+        completed,
       },
     });
     return NextResponse.json(
@@ -22,9 +22,22 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const tasks = await prisma.task.findMany();
+    const url = new URL(req.url);
+    const filter = url.searchParams.get("filter") || "all";
+    let whereClause = {};
+    if (filter === "important") {
+      whereClause = { important: true };
+    } else if (filter === "completed") {
+      whereClause = { completed: true };
+    } else if (filter === "incomplete") {
+      whereClause = { completed: false };
+    }
+    const tasks = await prisma.task.findMany({
+      where: whereClause,
+    });
+    //const tasks = await prisma.task.findMany();
     return NextResponse.json({ tasks }, { status: 200 });
   } catch (error) {
     console.log(error);
@@ -35,14 +48,20 @@ export async function GET() {
 export async function DELETE(req: Request) {
   try {
     const url = new URL(req.url);
-    const id = url.searchParams.get('id');
+    const id = url.searchParams.get("id");
     if (!id) {
-      return NextResponse.json({ error: "Task ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Task ID is required" },
+        { status: 400 }
+      );
     }
     await prisma.task.delete({
-      where: { id : id },
+      where: { id: id },
     });
-    return NextResponse.json({ message: "Task deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Task deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.log("Error deleting task:", error);
     return NextResponse.json({ error: "Error deleting task" }, { status: 500 });

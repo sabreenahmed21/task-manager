@@ -14,8 +14,9 @@ interface NavbarClientProps {
       email?: string;
       image?: string;
     };
-  };
+  } | null;
 }
+
 
 export default function NavbarClient({ session }: NavbarClientProps) {
   const [isOpen, setIsOpen] = useState(false);

@@ -37,7 +37,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({
     <button
       onClick={onClick}
       className={`sm:px-4 px-2 py-1 rounded-full text-sm font-medium ${
-        isActive ? `border-2 outline-2 outline` : ""
+        isActive ? `border-2 outline-2 outline outline-black` : ""
       } ${bgColor} ${textColor}`}
     >
       {label}

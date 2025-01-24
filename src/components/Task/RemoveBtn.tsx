@@ -27,6 +27,7 @@ export default function RemoveBtn({ id, onTaskDeleted }: { id: string, onTaskDel
           text: "Your task has been deleted.",
           icon: "success",
           showConfirmButton: false,
+          timer: 3000
         });
       } catch (error) {
         console.error("Error deleting task:", error);

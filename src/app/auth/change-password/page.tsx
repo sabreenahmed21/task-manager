@@ -46,7 +46,8 @@ export default function ChangePasswordForm() {
           icon: "success",
           title: "Change Password",
           text: result.message,
-          timer: 1000
+          showConfirmButton: false,
+          timer: 3000
         })
         reset();
         router.push("/dashboard");

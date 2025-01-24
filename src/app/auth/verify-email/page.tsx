@@ -12,7 +12,7 @@ const VerifyCodeForm: React.FC = () => {
   const router = useRouter();
   const inputRefs = useRef<Array<HTMLInputElement | null>>(Array(6).fill(null));
 
-  // التركيز على المربع الأول عند تحميل الصفحة
+  // Focus on the first input box on page load
   useEffect(() => {
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
@@ -20,19 +20,18 @@ const VerifyCodeForm: React.FC = () => {
   }, []);
 
   const handleInputChange = (index: number, value: string) => {
-    // تحديث القيمة الكاملة للرمز
     const newCode = code.split("");
     newCode[index] = value;
     setCode(newCode.join(""));
 
-    // الانتقال إلى المربع التالي إذا تم إدخال قيمة
+    // Move to the next input box if a value is entered
     if (value && index < 5 && inputRefs.current[index + 1]) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    // الانتقال إلى المربع السابق
+    // Move to the previous input box on backspace
     if (
       e.key === "Backspace" &&
       !code[index] &&
@@ -45,7 +44,7 @@ const VerifyCodeForm: React.FC = () => {
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").trim(); // Get copied text
+    const pastedData = e.clipboardData.getData("text").trim();
 
     // If the copied text consists of 6 digits
     if (/^\d{6}$/.test(pastedData)) {
@@ -85,9 +84,10 @@ const VerifyCodeForm: React.FC = () => {
         setIsSuccess(true);
         Swal.fire({
           icon: "success",
-          title: "Change Password",
-          text: "Account created and email verified successfully!",
-          timer: 1500,
+          title: "Email is verified",
+          text: "Account is created and email verified successfully!",
+          showConfirmButton: false,
+          timer: 3000,
         });
         router.push("/auth/login");
       } else {
@@ -102,23 +102,10 @@ const VerifyCodeForm: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "400px",
-        margin: "0 auto",
-        padding: "20px",
-        textAlign: "center",
-      }}
-    >
-      <h2 style={{ marginBottom: "20px", color: "#333" }}>Verify Your Email</h2>
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-        <div style={{ marginBottom: "20px" }}>
-          <label
-            htmlFor="email"
-            style={{ display: "block", marginBottom: "5px", color: "#555" }}
-          >
-            Email:
-          </label>
+    <div className="max-w-md mx-auto p-5 text-center bg-white rounded-lg mt-10 ">
+      <h2 className="mb-5 text-2xl font-bold text-gray-800">Verify Your Email</h2>
+      <form onSubmit={handleSubmit} className="mb-5">
+        <div className="mb-5">
           <input
             type="email"
             id="email"
@@ -126,22 +113,10 @@ const VerifyCodeForm: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             placeholder="Enter your email"
-            style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              fontSize: "16px",
-            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-base"
           />
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "20px",
-          }}
-        >
+        <div className="flex justify-between mb-5">
           {[...Array(6)].map((_, index) => (
             <input
               key={index}
@@ -154,35 +129,17 @@ const VerifyCodeForm: React.FC = () => {
               ref={(el) => {
                 inputRefs.current[index] = el;
               }}
-              style={{
-                width: "40px",
-                height: "40px",
-                textAlign: "center",
-                fontSize: "18px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                margin: "0 5px",
-              }}
+              className="w-12 h-12 text-center text-lg border border-gray-300 rounded-md mx-1"
             />
           ))}
         </div>
         <button
           type="submit"
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: "16px",
-            fontWeight: "bold",
-          }}
+          className="w-full py-3 bg-green-500 text-white font-bold rounded-md hover:bg-green-600 transition-colors"
         >
           {loading ? (
             <svg
-              className="animate-spin h-5 w-5 text-white"
+              className="animate-spin h-5 w-5 text-white mx-auto"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -208,11 +165,9 @@ const VerifyCodeForm: React.FC = () => {
       </form>
       {message && (
         <p
-          style={{
-            marginTop: "15px",
-            color: isSuccess ? "green" : "red",
-            fontSize: "14px",
-          }}
+          className={`mt-4 text-sm ${
+            isSuccess ? "text-green-600" : "text-red-600"
+          }`}
         >
           {message}
         </p>

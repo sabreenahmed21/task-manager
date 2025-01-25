@@ -6,6 +6,8 @@ import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { logout } from "@/actions/auth";
+import Swal from "sweetalert2";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +29,42 @@ export default function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleDeleteAccount = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+    if (result.isConfirmed) {
+      const response = await fetch("/api/delete-account", {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (response.ok) {
+        await Swal.fire({
+          title: "Deleted!",
+          text: "Your account has been deleted.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        await logout();
+      } else {
+        await Swal.fire({
+          title: "Error",
+          text: data.message || "Something went wrong!",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      }
+    }
+  };
 
   return (
     <nav className="bg-custom-color py-4  px-6 flex justify-between items-center">
@@ -82,6 +120,12 @@ export default function Navbar() {
                     Change Password
                   </button>
                   <Logout />
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="w-full px-4 py-2 text-sm hover:bg-gray-100"
+                  >
+                    Delete Account
+                  </button>
                 </div>
               </div>
             )}
@@ -91,4 +135,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

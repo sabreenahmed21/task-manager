@@ -82,45 +82,85 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return session;
     },
-      async signIn({ user, account }) {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email ?? undefined },
+    async signIn({ user, account }) {
+      console.log("SignIn callback triggered for user:", user.email);
+    
+      if (!account) {
+        throw new CustomError("Account data is missing.");
+      }
+    
+      // Ensure user.email is defined
+      if (!user.email) {
+        throw new CustomError("User email is missing.");
+      }
+    
+      // Check if the user already exists
+      let existingUser = await prisma.user.findUnique({
+        where: { email: user.email },
+      });
+    
+      if (!existingUser) {
+        console.log("No existing user found. Creating new user:", user.email);
+    
+        // Create a new user if they don't exist
+        existingUser = await prisma.user.create({
+          data: {
+            name: user.name ?? undefined, 
+            email: user.email,
+            emailVerified: new Date(), 
+            image: user.image ?? undefined, 
+          },
         });
     
-        if (existingUser) {
-          if (!account) {
-            throw new CustomError("Account data is missing.");
-          }
-          if (user.image) {
-            await prisma.user.update({
-              where: { email: user.email ?? undefined },
-              data: { image: user.image },
-            });
-          }
-          await prisma.account.upsert({
-            where: {
-              provider_providerAccountId: {
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-              },
-            },
-            update: {
-              access_token: account.access_token,
-              refresh_token: account.refresh_token,
-              expires_at: account.expires_at,
-            },
-            create: {
-              userId: existingUser.id,
-              provider: account.provider,
-              providerAccountId: account.providerAccountId,
-              type: account.type,
-              access_token: account.access_token,
-              refresh_token: account.refresh_token,
-              expires_at: account.expires_at,
-            },
+        console.log("New user created:", existingUser.email);
+      } else {
+        console.log("Existing user found:", existingUser.email);
+    
+        // Update the user's image if it's provided
+        if (user.image) {
+          console.log("Updating user image for:", existingUser.email);
+          await prisma.user.update({
+            where: { email: user.email },
+            data: { image: user.image },
           });
         }
-        return true;
-      },
-    },
+    
+        // Set emailVerified to true for OAuth providers (if not already set)
+        if (account.provider === "google" || account.provider === "github") {
+          console.log("Setting emailVerified for OAuth user:", existingUser.email);
+          await prisma.user.update({
+            where: { email: user.email },
+            data: { emailVerified: new Date() },
+          });
+        }
+      }
+    
+      // Upsert the account
+      console.log("Upserting account for:", existingUser.email);
+      await prisma.account.upsert({
+        where: {
+          provider_providerAccountId: {
+            provider: account.provider,
+            providerAccountId: account.providerAccountId,
+          },
+        },
+        update: {
+          access_token: account.access_token,
+          refresh_token: account.refresh_token,
+          expires_at: account.expires_at,
+        },
+        create: {
+          userId: existingUser.id,
+          provider: account.provider,
+          providerAccountId: account.providerAccountId,
+          type: account.type,
+          access_token: account.access_token,
+          refresh_token: account.refresh_token,
+          expires_at: account.expires_at,
+        },
+      });
+    
+      return true;
+    }
+  },
 });

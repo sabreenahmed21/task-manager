@@ -45,7 +45,7 @@ export default function LoginForm() {
               setError({
                 field: "email",
                 message:
-                  "This account was created using Google or GitHub. Please log in using Google or GitHub or sign up with this email.",
+                  "This account was created using Google or GitHub. Please log in using Google or GitHub",
               });
             } else if (res.code === "PasswordIncorrect") {
               setError({
